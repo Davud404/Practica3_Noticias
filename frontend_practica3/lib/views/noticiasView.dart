@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend_practica3/controls/Conexion.dart';
 import 'package:frontend_practica3/controls/servicio_back/FacadeService.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
 import 'package:frontend_practica3/controls/utiles/Utiles.dart';
@@ -16,12 +17,16 @@ class NoticiasView extends StatefulWidget {
 }
 
 class _NoticiasViewState extends State<NoticiasView> {
+  Conexion conexion = Conexion();
   List<dynamic> noticias = [];
   bool cargando = true;
-  final String URL_Media = "http://localhost:3001/multimedia/";
+  late String URL_Media;
+  //final String URL_Media = "http://192.168.1.14:3001/multimedia";
+  
   @override
   void initState() {
     super.initState();
+    URL_Media = conexion.URL_Media;
     fetchData();
   }
 

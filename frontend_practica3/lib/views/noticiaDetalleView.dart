@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:frontend_practica3/controls/Conexion.dart';
 import 'package:frontend_practica3/controls/servicio_back/FacadeService.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
 import 'package:frontend_practica3/views/comentarView.dart';
@@ -13,12 +14,16 @@ class NoticiaDetalleView extends StatefulWidget {
 }
 
 class _NoticiaDetalleViewState extends State<NoticiaDetalleView> {
-  final String URL_Media = "http://localhost:3001/multimedia/";
+  //final String URL_Media = "http://localhost:3001/multimedia/";
+  Conexion conexion = Conexion();
   List<dynamic> comentarios = [];
+  late String URL_Media;
+  //final String URL_Media = "http://192.168.1.14:3001/multimedia";
 
   @override
   void initState() {
     super.initState();
+    URL_Media = conexion.URL_Media;
     fetchData();
   }
 
