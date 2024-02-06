@@ -63,6 +63,9 @@ class FacadeService{
     return await c.solicitud_get('/noticias/comentarios/$external', false);
   }
 
+  Future<RespuestaGenerica> guardarComentario(external, Map<String, dynamic> data) async{
+    return await c.solicitud_post('/noticias/comentarios/guardar/$external', false, data);
+  }
 
 
 }

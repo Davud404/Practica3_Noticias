@@ -89,7 +89,7 @@ class _NoticiaDetalleViewState extends State<NoticiaDetalleView> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ComentarView(
-                                  external_noticia: widget.noticia['id']),
+                                  noticia: widget.noticia),
                             ),
                           );
                         },

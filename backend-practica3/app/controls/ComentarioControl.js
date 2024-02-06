@@ -21,7 +21,8 @@ class ComentarioControl {
                 include: [
                     { model: models.noticia, as: 'noticia', attributes: ['titulo'] },
                     { model: models.persona, as: 'persona', attributes: ['nombres', 'apellidos'] }
-                ]
+                ],
+                order: [['id', 'DESC']]
             });
             res.status(200);
             res.json({ msg: "OK", code: 200, datos: lista });
