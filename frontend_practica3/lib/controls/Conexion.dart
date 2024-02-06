@@ -5,10 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:frontend_practica3/controls/utiles/Utiles.dart';
 
 class Conexion {
-  //final String URL = "http://localhost:3001/api"; //Para celular cambiar localhost por 10.20.139.11
+  //final String URL = "http://localhost:3001/api"; //
   //final String URL_Media = "http://localhost:3001/multimedia";
-  final String URL = "http://192.168.1.14:3001/api";
-  final String URL_Media = "http://192.168.1.14:3001/multimedia/";
+  //final String URL = "http://192.168.1.14:3001/api";
+  //final String URL_Media = "http://192.168.1.14:3001/multimedia/";
+  final String URL = "http://10.20.138.17:3001/api";
+  final String URL_Media = "http://10.20.138.17:3001/multimedia/";
   static bool NO_TOKEN = false;
   //token
   Future<RespuestaGenerica> solicitud_get(String recurso, bool token) async {

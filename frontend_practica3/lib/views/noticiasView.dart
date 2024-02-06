@@ -5,6 +5,7 @@ import 'package:frontend_practica3/controls/Conexion.dart';
 import 'package:frontend_practica3/controls/servicio_back/FacadeService.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
 import 'package:frontend_practica3/controls/utiles/Utiles.dart';
+import 'package:frontend_practica3/views/mapaComentarios.dart';
 import 'package:frontend_practica3/views/noticiaDetalleView.dart';
 import 'package:validators/validators.dart';
 
@@ -16,18 +17,33 @@ class NoticiasView extends StatefulWidget {
   _NoticiasViewState createState() => _NoticiasViewState();
 }
 
+Future<String?> _obtenerRolUser() async {
+  Utiles util = Utiles();
+  return await util.getValue('rol');
+}
+
 class _NoticiasViewState extends State<NoticiasView> {
   Conexion conexion = Conexion();
   List<dynamic> noticias = [];
+  List<dynamic> comentarios = [];
   bool cargando = true;
   late String URL_Media;
-  //final String URL_Media = "http://192.168.1.14:3001/multimedia";
-  
+  late String rol = '';
+
   @override
   void initState() {
     super.initState();
     URL_Media = conexion.URL_Media;
+    _cargarRol();
     fetchData();
+  }
+
+  // Nueva función para cargar el rol del usuario
+  void _cargarRol() async {
+    final rolUser = await _obtenerRolUser();
+    setState(() {
+      rol = rolUser ?? 'usuario'; // Actualiza el valor de rol
+    });
   }
 
   Future<void> fetchData() async {
@@ -90,6 +106,28 @@ class _NoticiasViewState extends State<NoticiasView> {
                         Text("Fecha: ${noticia['fecha']}"),
                         Text(
                             "Autor: ${noticia['persona']['nombres']} ${noticia['persona']['apellidos']}"),
+                      ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                            height: 10), // Espacio entre el texto y el botón
+                        rol == 'administrador'
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MapaComentarios(noticia: noticia),
+                                    ),
+                                  );
+                                },
+                                child: Text('Ver Mapa'),
+                              )
+                            : SizedBox
+                                .shrink(), // Para ocultar el botón si no es administrador
                       ],
                     ),
                   ),

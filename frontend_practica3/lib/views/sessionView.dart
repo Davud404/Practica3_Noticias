@@ -32,6 +32,7 @@ class _SessionViewState extends State<SessionView> {
             util.saveValue('token', value.datos['token']);
             util.saveValue('user', value.datos['user']);
             util.saveValue('external', value.datos['external_user']);
+            util.saveValue('rol', value.datos['rol_user']);
             final SnackBar msg = SnackBar(content: Text('Bienvenido ${value.datos['user']}'));
             ScaffoldMessenger.of(context).showSnackBar(msg);
           }else{
@@ -59,16 +60,6 @@ class _SessionViewState extends State<SessionView> {
               child: const Text("Noticias", 
               style: TextStyle(
                 color: Colors.blue,
-                fontWeight: FontWeight.bold,
-                fontSize :30
-              )),
-            ),
-            Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(10),
-              child: const Text("Le mejor aplicación del mundo xd", 
-              style: TextStyle(
-                color: Colors.blueGrey,
                 fontWeight: FontWeight.bold,
                 fontSize :30
               )),

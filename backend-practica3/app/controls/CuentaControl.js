@@ -13,7 +13,7 @@ class CuentaControl {
             let cuentaA = await cuenta.findOne({
                 where:{correo:req.body.correo},
                 include:[
-                    {model: models.persona, as:"persona", attributes: ['nombres','apellidos', 'external_id']}
+                    {model: models.persona, as:"persona", attributes: ['nombres','apellidos', 'external_id','id_rol']}
                 ]
             });
             if(cuentaA === null || cuentaA === undefined){
@@ -33,10 +33,13 @@ class CuentaControl {
                         const token = jwt.sign(token_data, key,{//Encripta el token_data con el abecedario que se le dio (key)
                             expiresIn: '2h'//tiempo de expiración del token
                         });
+                        var rolAux = await rol.findOne({where:{id:cuentaA.persona.id_rol}});
+                        //console.log(rolAux);
                         var info = {
                             token: token,
                             user: cuentaA.persona.nombres+' '+cuentaA.persona.apellidos,
-                            external_user: cuentaA.persona.external_id
+                            external_user: cuentaA.persona.external_id,
+                            rol_user: rolAux.nombre
                         };
                         console.log(cuentaA.persona.external_id);
                         res.status(200);
