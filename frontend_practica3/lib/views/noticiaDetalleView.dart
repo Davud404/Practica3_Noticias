@@ -116,7 +116,7 @@ class _NoticiaDetalleViewState extends State<NoticiaDetalleView> {
                   children: [
                     Text(
                       '${comentario['persona']['nombres']} ${comentario['persona']['apellidos']}',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(comentario['cuerpo'],
                         style: TextStyle(fontSize: 16)),

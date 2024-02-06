@@ -77,13 +77,55 @@ class _MapaComentariosState extends State<MapaComentarios> {
           // Construye el mapa utilizando la posición obtenida
           return FlutterMap(
             options: MapOptions(
-              initialCenter: LatLng(latitud ?? 51.509364, longitud ?? -0.128928),
+              initialCenter:
+                  LatLng(latitud ?? 51.509364, longitud ?? -0.128928),
               initialZoom: 16,
             ),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.app',
+                userAgentPackageName: 'Flutter Map',
+              ),
+              MarkerLayer(
+                markers: comentarios
+                    .map((comentario) => Marker(
+                          width: 300.0,
+                          height: 300.0,
+                          point: LatLng(
+                              comentario['latitud'], comentario['longitud']),
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        '${comentario['persona']['nombres']} ${comentario['persona']['apellidos']}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: Text(comentario['cuerpo']),
+                                      actions: [
+                                        TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text('Cerrar')),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                            ),
+                          ),
+                          /*child: Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                  ),*/
+                        ))
+                    .toList(),
               ),
             ],
           );
