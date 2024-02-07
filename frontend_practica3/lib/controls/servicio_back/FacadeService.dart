@@ -67,5 +67,9 @@ class FacadeService{
     return await c.solicitud_post('/noticias/comentarios/guardar/$external', false, data);
   }
 
+  Future<RespuestaGenerica> obtenerUsuario(external) async{
+    return await c.solicitud_get('/admin/personas/get/$external', false);
+  }
+
 
 }

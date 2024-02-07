@@ -160,7 +160,7 @@ class PersonaControl {
                     celular: req.body.celular !== undefined ? req.body.celular : person.celular,
                     fecha_nacimiento: req.body.fecha !== undefined ? req.body.fecha : person.fecha_nacimiento,
                     //id_rol: req.body.rol !== undefined ? req.body.rol.id : person.rol.id,
-                    external_id: uuid.v4()
+                    //external_id: uuid.v4()
                 };
                 if (req.body.correo !== undefined || req.body.clave !== undefined) {
                     data.cuenta = {

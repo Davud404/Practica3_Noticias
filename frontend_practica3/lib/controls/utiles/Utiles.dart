@@ -14,7 +14,7 @@ class Utiles{ //Esto es para almacenar el token que devuelve el inicio de sesió
     await _storage.delete(key: key);
   }
 
-  void removeAllItem(key) async{
+  void removeAllItem() async{
     await _storage.deleteAll();
   }
 
