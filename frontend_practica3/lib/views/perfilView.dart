@@ -105,7 +105,7 @@ class _PerfilViewState extends State<PerfilView> {
                               MaterialStateProperty.all<Color>(Colors.white),
                         ),
                         child: const Text(
-                          'Comentar',
+                          'Editar Información',
                           style: TextStyle(fontSize: 20),
                         ))
                   ],

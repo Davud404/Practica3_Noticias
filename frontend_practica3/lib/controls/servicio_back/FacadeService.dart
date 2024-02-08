@@ -71,5 +71,11 @@ class FacadeService{
     return await c.solicitud_get('/admin/personas/get/$external', false);
   }
 
+  Future<RespuestaGenerica> modificarUsuario(external, Map<String,String> data) async{
+    log(external.toString());
+    log(data.toString());
+    return await c.solicitud_patch('/admin/personas/modificar/$external', false, data);
+  }
+
 
 }

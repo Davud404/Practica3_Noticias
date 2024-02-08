@@ -19,6 +19,7 @@ class Conexion {
   //final String URL_Media = "http://192.168.0.36:3001/multimedia/";
   static bool NO_TOKEN = false;
   //token
+
   Future<RespuestaGenerica> solicitud_get(String recurso, bool token) async {
     Map<String, String> _header = {'Content-Type': 'application/json'};
     if (token) {
@@ -50,6 +51,8 @@ class Conexion {
     }
   }
 
+  
+
   Future<RespuestaGenerica> solicitud_post(String recurso, bool token, Map<dynamic,dynamic> mapa) async {
     Map<String, String> _header = {'Content-Type': 'application/json'};
     if (token) {
@@ -79,6 +82,35 @@ class Conexion {
     }
   }
 
+  Future<RespuestaGenerica> solicitud_patch(String recurso, bool token, Map<dynamic,dynamic> mapa) async {
+    Map<String, String> _header = {'Content-Type': 'application/json'};
+    if (token) {
+      Utiles util = new Utiles();
+      String? tokenA = await util.getValue('token'); 
+      _header = {'Content-Type': 'application/json', 'token': tokenA.toString()};
+    }
+    final String _url = URL + recurso;
+    final uri = Uri.parse(_url);
+    try {
+      final response = await http.patch(uri, headers: _header, body:jsonEncode(mapa));
+      if (response.statusCode != 200) {
+        if (response.statusCode == 404) {
+          return _response(404, "Recurso no encontrado", []);
+        } else {
+          Map<dynamic, dynamic> mapa = jsonDecode(response.body);
+          return _response(mapa['code'], mapa['msg'], mapa['datos']);
+        }
+      } else {
+        Map<dynamic, dynamic> mapa = jsonDecode(response.body);
+        return _response(mapa['code'], mapa['msg'], mapa['datos']);
+        //log(response.body);
+      }
+      //return RespuestaGenerica();
+    } catch (e) {
+      return _response(500, "Error inesperado", []);
+    }
+  }
+
   RespuestaGenerica _response(int code, String msg, dynamic data) {
     var respuesta = RespuestaGenerica();
     respuesta.code = code;
@@ -87,3 +119,5 @@ class Conexion {
     return respuesta;
   }
 }
+
+

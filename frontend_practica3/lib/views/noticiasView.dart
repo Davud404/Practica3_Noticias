@@ -79,9 +79,9 @@ class _NoticiasViewState extends State<NoticiasView> {
     }
   }
 
-  void _cerrarSesion() {
+  void _cerrarSesion() async {
     Utiles util = Utiles();
-    util.removeAllItem();
+    util.removeAllItems();
     setState(() {
       rol = ''; // Restablece el valor del rol a vacío
     });
@@ -90,7 +90,7 @@ class _NoticiasViewState extends State<NoticiasView> {
 
   @override
   Widget build(BuildContext context) {
-    if (noticias == []) {
+    if (noticias.isEmpty) {
       return Scaffold(
         appBar: AppBar(
           title: Text('Cargando...'),

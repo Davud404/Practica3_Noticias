@@ -35,12 +35,13 @@ class _SessionViewState extends State<SessionView> {
             util.saveValue('rol', value.datos['rol_user']);
             final SnackBar msg = SnackBar(content: Text('Bienvenido ${value.datos['user']}'));
             ScaffoldMessenger.of(context).showSnackBar(msg);
+            Navigator.pushNamed(context, '/noticias');
           }else{
             final SnackBar msg = SnackBar(content: Text('Error ${value.tag}'));
             ScaffoldMessenger.of(context).showSnackBar(msg);
           }
         });
-        Navigator.pushNamed(context, '/noticias');
+        
       }else{
         log("okn't");
       }
@@ -103,7 +104,10 @@ class _SessionViewState extends State<SessionView> {
               padding: const EdgeInsets.fromLTRB(10,0,10,0), //Función para padding de todos lados Left, Top, Right, Bottom
               child: ElevatedButton(
                 child: const Text("Inicio"),
-                onPressed: _iniciar,
+                onPressed: (){
+                  _iniciar();
+                  
+                },
               ),
             ),
             Row(

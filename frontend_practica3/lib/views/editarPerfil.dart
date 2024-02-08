@@ -11,72 +11,153 @@ import 'package:validators/validators.dart';
 
 class EditarPerfil extends StatefulWidget {
   final dynamic persona;
-  const EditarPerfil({ Key? key , required this.persona}) : super(key: key);
+  const EditarPerfil({Key? key, required this.persona}) : super(key: key);
 
   @override
   _EditarPerfilState createState() => _EditarPerfilState();
 }
 
 class _EditarPerfilState extends State<EditarPerfil> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController nombres = TextEditingController();
+  final TextEditingController apellidos = TextEditingController();
+  final TextEditingController celular = TextEditingController();
+  final TextEditingController correo = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    nombres.text = widget.persona['nombres'];
+    apellidos.text = widget.persona['apellidos'];
+    celular.text = widget.persona['celular'];
+    correo.text = widget.persona['cuenta']['correo'];
+  }
+
+  void _modificar() {
+    setState(() {
+      FacadeService servicio = FacadeService();
+      if (_formKey.currentState!.validate()) {
+        Map<String, String> mapa = {
+          "nombres": nombres.text,
+          "apellidos": apellidos.text,
+          "celular": celular.text,
+          "correo": correo.text,
+        };
+        servicio
+            .modificarUsuario(widget.persona['external_id'], mapa)
+            .then((value) async {
+          if (value.code == 200) {
+            log('modificado');
+            /*showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text('Alert Dialog Example'),
+                    actions: <Widget>[
+                      ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('OK')),
+                    ],
+                  );
+                });*/
+          } else {
+            log('error');
+          }
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Form(
+      key: _formKey,
+      child: Scaffold(
         appBar: AppBar(
           title: Text('Editar Perfil'),
         ),
-        /*body: ListView(
+        body: ListView(
           children: <Widget>[
             Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "${persona['nombres']} ${persona['apellidos']}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Celular: ${persona['celular']}",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Correo: ${persona['cuenta']['correo']}",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(height: 10),
-                  
-                ],
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: nombres,
+                decoration: const InputDecoration(
+                    labelText: 'Nombres', suffixIcon: Icon(Icons.emoji_people)),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Ingrese sus nombres";
+                  }
+                },
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: apellidos,
+                decoration: const InputDecoration(
+                    labelText: 'Apellidos',
+                    suffixIcon: Icon(Icons.emoji_people)),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Ingrese sus apellidos";
+                  }
+                },
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: celular,
+                decoration: const InputDecoration(
+                    labelText: 'Celular', suffixIcon: Icon(Icons.add_ic_call)),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Ingrese su celular";
+                  }
+                },
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextFormField(
+                controller: correo,
+                decoration: const InputDecoration(
+                    labelText: 'Correo',
+                    suffixIcon: Icon(Icons.alternate_email)),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Ingrese un correo";
+                  }
+                  if (!isEmail(value)) {
+                    return "Ingrese un correo válido";
+                  }
+                },
               ),
             ),
             Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                        onPressed: () {
-                          /*Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ComentarView(
-                                  noticia: widget.noticia),
-                            ),
-                          );*/
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        child: const Text(
-                          'Comentar',
-                          style: TextStyle(fontSize: 20),
-                        ))
-                  ],
-                ),
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TextButton(
+                    onPressed: () {
+                      _modificar();
+                      Navigator.pushNamed(context, '/noticias');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.blue),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                    ),
+                    child: const Text(
+                      'Confirmar',
+                      style: TextStyle(fontSize: 20),
+                    ))
+              ],
+            ),
           ],
-        ),*/
-      );
+        ),
+      ),
+    );
   }
 }
