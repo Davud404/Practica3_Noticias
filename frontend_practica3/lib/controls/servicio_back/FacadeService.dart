@@ -72,10 +72,11 @@ class FacadeService{
   }
 
   Future<RespuestaGenerica> modificarUsuario(external, Map<String,String> data) async{
-    log(external.toString());
-    log(data.toString());
     return await c.solicitud_patch('/admin/personas/modificar/$external', false, data);
   }
 
+  Future<RespuestaGenerica> obtenerComentariosUser(external) async{
+    return await c.solicitud_get('/noticias/comentarios/usuario/$external', false);
+  }
 
 }

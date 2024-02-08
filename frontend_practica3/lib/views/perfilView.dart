@@ -19,6 +19,7 @@ class PerfilView extends StatefulWidget {
 
 class _PerfilViewState extends State<PerfilView> {
   dynamic persona;
+  List<dynamic> comentarios = [];
 
   @override
   void initState() {
@@ -29,12 +30,14 @@ class _PerfilViewState extends State<PerfilView> {
   Future<void> fetchData() async {
     FacadeService servicio = FacadeService();
     try {
-      RespuestaGenerica respuesta =
-          await servicio.obtenerUsuario(widget.external_user);
+      RespuestaGenerica respuesta = await servicio.obtenerUsuario(widget.external_user);
+      RespuestaGenerica comentariosAux = await servicio.obtenerComentariosUser(widget.external_user);
       setState(() {
         if (respuesta.code == 200) {
           persona = respuesta.datos;
-          log(persona.toString());
+          comentarios = comentariosAux.datos;
+          log(comentarios.toString());
+          //log(persona.toString());
         }
       });
     } catch (error) {
@@ -67,8 +70,13 @@ class _PerfilViewState extends State<PerfilView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${persona['nombres']} ${persona['apellidos']}",
+                    "Información General",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Usuario: ${persona['nombres']} ${persona['apellidos']}",
+                    style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(height: 10),
                   Text(
@@ -81,35 +89,38 @@ class _PerfilViewState extends State<PerfilView> {
                     style: TextStyle(fontSize: 20),
                   ),
                   SizedBox(height: 10),
-                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    EditarPerfil(persona: persona),
+                              ),
+                            );
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.blue),
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                          ),
+                          child: const Text(
+                            'Editar Información',
+                            style: TextStyle(fontSize: 20),
+                          ))
+                    ],
+                  ),
+                  Text(
+                    "Comentarios",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  ),
                 ],
               ),
             ),
-            Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditarPerfil(
-                                  persona: persona),
-                            ),
-                          );
-                        },
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all<Color>(Colors.blue),
-                          foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        child: const Text(
-                          'Editar Información',
-                          style: TextStyle(fontSize: 20),
-                        ))
-                  ],
-                ),
           ],
         ),
       );

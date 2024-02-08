@@ -28,6 +28,27 @@ class ComentarioControl {
             res.json({ msg: "OK", code: 200, datos: lista });
         }
     }
+
+    async listar_comentariosUser(req, res) {
+        const external = req.params.external;
+        var personaAux = await persona.findOne({ where: { external_id: external } });
+        if (personaAux === undefined || personaAux === null) {
+            res.status(400);
+            res.json({ msg: "Error", tag: "No existe ese usuario", code: 400 });
+        } else {
+            var lista = await comentario.findAll({
+                where: { id_persona: personaAux.id },
+                attributes: ['cuerpo', 'estado', 'fecha', 'latitud', 'longitud', 'external_id'],
+                include: [
+                    { model: models.noticia, as: 'noticia', attributes: ['titulo'] },
+                    { model: models.persona, as: 'persona', attributes: ['nombres', 'apellidos','external_id'] }
+                ],
+                order: [['id', 'DESC']]
+            });
+            res.status(200);
+            res.json({ msg: "OK", code: 200, datos: lista });
+        }
+    }
     /*
     async obtener(req, res) {
         const external = req.params.external;
