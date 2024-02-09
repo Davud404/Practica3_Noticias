@@ -5,6 +5,7 @@ import 'package:frontend_practica3/controls/Conexion.dart';
 import 'package:frontend_practica3/controls/servicio_back/FacadeService.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
 import 'package:frontend_practica3/controls/utiles/Utiles.dart';
+import 'package:frontend_practica3/views/editarComentario.dart';
 import 'package:frontend_practica3/views/editarPerfil.dart';
 import 'package:frontend_practica3/views/mapaComentarios.dart';
 import 'package:frontend_practica3/views/noticiaDetalleView.dart';
@@ -30,13 +31,15 @@ class _PerfilViewState extends State<PerfilView> {
   Future<void> fetchData() async {
     FacadeService servicio = FacadeService();
     try {
-      RespuestaGenerica respuesta = await servicio.obtenerUsuario(widget.external_user);
-      RespuestaGenerica comentariosAux = await servicio.obtenerComentariosUser(widget.external_user);
+      RespuestaGenerica respuesta =
+          await servicio.obtenerUsuario(widget.external_user);
+      RespuestaGenerica comentariosAux =
+          await servicio.obtenerComentariosUser(widget.external_user);
       setState(() {
         if (respuesta.code == 200) {
           persona = respuesta.datos;
           comentarios = comentariosAux.datos;
-          log(comentarios.toString());
+          //log(comentarios.toString());
           //log(persona.toString());
         }
       });
@@ -118,6 +121,40 @@ class _PerfilViewState extends State<PerfilView> {
                     "Comentarios",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                   ),
+                  for (var comentario in comentarios)
+                    Card(
+                      child: ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Noticia: ${comentario['noticia']['titulo']}',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            Text(comentario['cuerpo'],
+                                style: TextStyle(fontSize: 16)),
+                            Container(
+                              height: 50,
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10,
+                                  0), //Función para padding de todos lados Left, Top, Right, Bottom
+                              child: ElevatedButton(
+                                child: const Text("Editar"),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditarComentario(comentario: comentario),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),

@@ -8,6 +8,18 @@ var persona = models.persona;
 
 class ComentarioControl {
     
+    async listarTodosComentarios(req, res) {
+        var lista = await comentario.findAll({
+            attributes: ['cuerpo', 'estado', 'fecha', 'latitud', 'longitud', 'external_id'],
+            include: [
+                { model: models.noticia, as: 'noticia', attributes: ['titulo'] },
+                { model: models.persona, as: 'persona', attributes: ['nombres', 'apellidos'] }
+            ],
+        });
+        res.status(200);
+        res.json({ msg: "OK", code: 200, datos: lista });
+    }
+
     async listar(req, res) {
         const external = req.params.external;
         var noticiaAux = await noticia.findOne({ where: { external_id: external } });
@@ -129,7 +141,7 @@ class ComentarioControl {
                     estado: req.body.estado !== undefined ? req.body.estado : coment.estado,
                     longitud: req.body.longitud !== undefined ? req.body.longitud : coment.longitud,
                     latitud: req.body.latitud !== undefined ? req.body.latitud : coment.latitud,
-                    external_id: uuid.v4()
+                    //external_id: uuid.v4()
                 };
                 await coment.update(data);
                 res.status(200).json({ msg: "Comentario modificado", code: 200 });

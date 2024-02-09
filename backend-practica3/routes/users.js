@@ -74,5 +74,6 @@ router.get('/noticias/comentarios/:external', comentarioControl.listar);
 router.post('/noticias/comentarios/guardar/:external', comentarioControl.guardar);
 router.patch('/noticias/comentario/modificar/:external', comentarioControl.modificar);
 router.get('/noticias/comentarios/usuario/:external', comentarioControl.listar_comentariosUser);
+router.get('/noticias/comentarios', comentarioControl.listarTodosComentarios);
 
 module.exports = router;

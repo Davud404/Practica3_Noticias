@@ -79,4 +79,12 @@ class FacadeService{
     return await c.solicitud_get('/noticias/comentarios/usuario/$external', false);
   }
 
+  Future<RespuestaGenerica> obtenerTodosComentarios() async{
+    return await c.solicitud_get('/noticias/comentarios', false);
+  }
+
+  Future<RespuestaGenerica> modificarComentario(external, Map<String,String> data) async{
+    return await c.solicitud_patch('/noticias/comentario/modificar/$external', false, data);
+  }
+
 }

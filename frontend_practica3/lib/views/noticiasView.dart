@@ -6,6 +6,7 @@ import 'package:frontend_practica3/controls/servicio_back/FacadeService.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
 import 'package:frontend_practica3/controls/utiles/Utiles.dart';
 import 'package:frontend_practica3/views/mapaComentarios.dart';
+import 'package:frontend_practica3/views/mapaTodosComentarios.dart';
 import 'package:frontend_practica3/views/noticiaDetalleView.dart';
 import 'package:frontend_practica3/views/perfilView.dart';
 import 'package:validators/validators.dart';
@@ -64,10 +65,12 @@ class _NoticiasViewState extends State<NoticiasView> {
     FacadeService servicio = FacadeService();
     try {
       RespuestaGenerica respuesta = await servicio.listarNoticiasTodo();
+      RespuestaGenerica comentariosAux = await servicio.obtenerTodosComentarios();
       setState(() {
         cargando = false;
-        if (respuesta.code == 200) {
+        if (respuesta.code == 200 || comentariosAux.code == 200) {
           noticias = respuesta.datos;
+          comentarios = comentariosAux.datos;
           //log(noticias.toString());
         }
       });
@@ -126,6 +129,20 @@ class _NoticiasViewState extends State<NoticiasView> {
                     );
                   },
                 ),
+                if (rol ==
+                    'administrador')
+                  ListTile(
+                    title: Text('Ver Mapa'),
+                    onTap: () {
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MapaTodosComentarios(
+                                  comentarios: comentarios),
+                            ),
+                          );
+                    },
+                  ),
                 ListTile(
                   title: Text('Cerrar Sesión'),
                   onTap: () {

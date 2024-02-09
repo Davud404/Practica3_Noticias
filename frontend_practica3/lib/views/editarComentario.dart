@@ -9,23 +9,12 @@ import 'package:validators/validators.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 
-class ComentarView extends StatefulWidget {
-  final dynamic noticia;
-  const ComentarView({Key? key, required this.noticia}) : super(key: key);
+class EditarComentario extends StatefulWidget {
+  final dynamic comentario;
+  const EditarComentario({ Key? key, required this.comentario }) : super(key: key);
 
   @override
-  _ComentarViewState createState() => _ComentarViewState();
-}
-
-Future<Position> _obtenerPosicion() async {
-  return await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.medium,
-  );
-}
-
-Future<String?> _obtenerExternalUser() async {
-  Utiles util = Utiles();
-  return await util.getValue('external');
+  _EditarComentarioState createState() => _EditarComentarioState();
 }
 
 String obtenerFechaActual() {
@@ -34,54 +23,35 @@ String obtenerFechaActual() {
   return fecha;
 }
 
-class _ComentarViewState extends State<ComentarView> {
-  late Future<Position> posicion;
-  double? latitud;
-  double? longitud;
-  Future<String?> external = _obtenerExternalUser();
-
-  Utiles util = Utiles();
+class _EditarComentarioState extends State<EditarComentario> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController comentarioControl = TextEditingController();
+
 
   @override
   void initState() {
     super.initState();
+    comentarioControl.text = widget.comentario['cuerpo'];
   }
 
-  void _guardarComentario() async {
-    final externalValue = await external;
-    final posicion =
-        await _obtenerPosicion(); // Espera a que se resuelva la Future
-
-    setState(() {
-      latitud = posicion.latitude;
-      longitud = posicion.longitude;
-    });
-
-    //log(latitud.toString());
-    //log(longitud.toString());
-
+  void _editarComentario() async{
     setState(() {
       FacadeService servicio = FacadeService();
       final String fecha = obtenerFechaActual();
-      if (_formKey.currentState!.validate()) {
-        Map<String, dynamic> mapa = {
-          "cuerpo": comentarioControl.text,
-          "fecha": fecha,
-          "longitud": longitud, // Si es null, se establece en 0.0
-          "latitud": latitud, // Si es null, se establece en 0.0
-          "usuario": externalValue,
-        };
-        //log(mapa.toString());
-        servicio.guardarComentario(widget.noticia['id'], mapa).then((value) async {
-        if (value.code == 200) {
-          log('guardado');
-        } else {
-          log('no se guardó');
+      if(_formKey.currentState!.validate()){
+      Map<String,String> mapa = {
+        "cuerpo": comentarioControl.text,
+        "fecha": fecha,
+      };
+      log(mapa.toString());
+      servicio.modificarComentario(widget.comentario['external_id'], mapa).then((value) {
+        if(value.code == 200){
+          log('comentario modificado');
+        }else{
+          log('error');
         }
       });
-      }
+    }
     });
   }
 
@@ -110,7 +80,7 @@ class _ComentarViewState extends State<ComentarView> {
               children: <Widget>[
                 TextButton(
                     onPressed: () {
-                      _guardarComentario();
+                      _editarComentario();
                       Navigator.pushNamed(context, '/noticias');
                       /*Navigator.push(
                         context,
@@ -127,7 +97,7 @@ class _ComentarViewState extends State<ComentarView> {
                           MaterialStateProperty.all<Color>(Colors.white),
                     ),
                     child: const Text(
-                      'Comentar',
+                      'Editar comentario',
                       style: TextStyle(fontSize: 20),
                     ))
               ],
