@@ -8,7 +8,7 @@ class PersonaControl {
         var lista = await persona.findAll({
             attributes: ['nombres', 'apellidos', 'celular', 'external_id'],
             include: [
-                { model: models.cuenta, as: 'cuenta', attributes: ['correo'] },
+                { model: models.cuenta, as: 'cuenta', attributes: ['correo','estado'] },
                 { model: models.rol, as: 'rol', attributes: ['nombre'] }
             ]
         });
@@ -22,7 +22,7 @@ class PersonaControl {
             where: { external_id: external },
             attributes: ['nombres', 'apellidos', 'celular', 'external_id'],
             include: [
-                { model: models.cuenta, as: 'cuenta', attributes: ['correo'] },
+                { model: models.cuenta, as: 'cuenta', attributes: ['correo', 'estado'] },
                 { model: models.rol, as: 'rol', attributes: ['nombre'] }
             ]
         });
@@ -91,6 +91,20 @@ class PersonaControl {
         }
     }
 
+    async listarUsuarios(req, res) {
+        var rolAux = await rol.findOne({ where: { nombre: "usuario" } });
+        var lista = await persona.findAll({
+            where:{id_rol:rolAux.id},
+            attributes: ['nombres', 'apellidos', 'celular', 'external_id'],
+            include: [
+                { model: models.cuenta, as: 'cuenta', attributes: ['correo','estado'] },
+                { model: models.rol, as: 'rol', attributes: ['nombre'] }
+            ]
+        });
+        res.status(200);
+        res.json({ msg: "OK", code: 200, datos: lista });
+    }
+
     async guardar_usuario(req, res) {
         if (req.body.hasOwnProperty('nombres') &&
             req.body.hasOwnProperty('apellidos') &&
@@ -147,40 +161,44 @@ class PersonaControl {
                 { model: models.rol, as: 'rol' }
             ]
         });
-
-        if (person == undefined || person == null) {
-            res.status(200).json({ msg: "No existe esa persona", code: 200 });
-        } else {
-            try {
-                var uuid = require('uuid');
-
-                const data = {
-                    apellidos: req.body.apellidos !== undefined ? req.body.apellidos : person.apellidos,
-                    nombres: req.body.nombres !== undefined ? req.body.nombres : person.nombres,
-                    celular: req.body.celular !== undefined ? req.body.celular : person.celular,
-                    fecha_nacimiento: req.body.fecha !== undefined ? req.body.fecha : person.fecha_nacimiento,
-                    //id_rol: req.body.rol !== undefined ? req.body.rol.id : person.rol.id,
-                    //external_id: uuid.v4()
-                };
-                if (req.body.correo !== undefined || req.body.clave !== undefined) {
-                    data.cuenta = {
-                        correo: req.body.correo !== undefined ? req.body.correo : person.cuenta.correo,
-                        clave: req.body.clave !== undefined ? req.body.clave : person.cuenta.clave
-                    };
-                }
-                if (req.body.rol !== undefined) {
-                    var rolAux = await rol.findOne({ where: { external_id: req.body.rol } });
-                    data.id_rol = rolAux.id;
-                    rolAux.external_id = uuid.v4();
-                    await rolAux.save();
-                }
-                await person.update(data);
-                res.status(200).json({ msg: "Persona modificada", code: 200 });
-            } catch (error) {
-                res.status(500).json({ msg: "Error interno del servidor", code: 500, error_msg: error.message });
-            }
+    
+        if (!person) {
+            return res.status(404).json({ msg: "No existe esa persona", code: 404 });
         }
-
+    
+        try {
+            const updatedPersonData = {
+                apellidos: req.body.apellidos !== undefined ? req.body.apellidos : person.apellidos,
+                nombres: req.body.nombres !== undefined ? req.body.nombres : person.nombres,
+                celular: req.body.celular !== undefined ? req.body.celular : person.celular,
+                fecha_nacimiento: req.body.fecha !== undefined ? req.body.fecha : person.fecha_nacimiento,
+            };
+    
+            if (req.body.correo !== undefined || req.body.clave !== undefined || req.body.estado_cuenta !== undefined) {
+                // Actualizar los datos de la cuenta si se proporcionaron en la solicitud
+                await person.cuenta.update({
+                    correo: req.body.correo !== undefined ? req.body.correo : person.cuenta.correo,
+                    clave: req.body.clave !== undefined ? req.body.clave : person.cuenta.clave,
+                    estado: req.body.estado_cuenta !== undefined ? req.body.estado_cuenta : person.cuenta.estado,
+                });
+            }
+    
+            if (req.body.rol !== undefined) {
+                var rolAux = await rol.findOne({ where: { external_id: req.body.rol } });
+                updatedPersonData.id_rol = rolAux.id;
+                rolAux.external_id = uuid.v4();
+                await rolAux.save();
+            }
+    
+            await person.update(updatedPersonData);
+            
+            console.log(person.cuenta);
+    
+            return res.status(200).json({ msg: "Persona modificada", code: 200 });
+        } catch (error) {
+            return res.status(500).json({ msg: "Error interno del servidor", code: 500, error_msg: error.message });
+        }
     }
+    
 }
 module.exports = PersonaControl; //Exportar la clase

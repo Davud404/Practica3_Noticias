@@ -48,18 +48,10 @@ class _EditarPerfilState extends State<EditarPerfil> {
             .then((value) async {
           if (value.code == 200) {
             log('modificado');
-            /*showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text('Alert Dialog Example'),
-                    actions: <Widget>[
-                      ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text('OK')),
-                    ],
-                  );
-                });*/
+            Utiles util = Utiles();
+            util.removeItem('user');
+            final String user = nombres.text + " " + apellidos.text;
+            util.saveValue('user', user);
           } else {
             log('error');
           }

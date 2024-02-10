@@ -60,6 +60,7 @@ router.get('/admin/personas/get/:external', personaControl.obtener);
 router.post('/admin/personas/guardar', personaControl.guardar);
 router.post('/usuarios/guardar', personaControl.guardar_usuario);
 router.patch('/admin/personas/modificar/:external', personaControl.modificar);
+router.get('/admin/usuarios', personaControl.listarUsuarios);
 //roles
 router.get('/admin/rol', rolControl.listar);
 router.post('/admin/rol/guardar', rolControl.guardar);

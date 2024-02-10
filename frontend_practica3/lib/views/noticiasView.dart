@@ -9,6 +9,7 @@ import 'package:frontend_practica3/views/mapaComentarios.dart';
 import 'package:frontend_practica3/views/mapaTodosComentarios.dart';
 import 'package:frontend_practica3/views/noticiaDetalleView.dart';
 import 'package:frontend_practica3/views/perfilView.dart';
+import 'package:frontend_practica3/views/usuariosView.dart';
 import 'package:validators/validators.dart';
 
 //fstful
@@ -38,8 +39,8 @@ class _NoticiasViewState extends State<NoticiasView> {
   void initState() {
     super.initState();
     URL_Media = conexion.URL_Media;
-    _cargarRol();
     _obtenerUser();
+    _cargarRol();
     fetchData();
   }
 
@@ -142,7 +143,21 @@ class _NoticiasViewState extends State<NoticiasView> {
                             ),
                           );
                     },
+                    
                   ),
+                if(rol == 'administrador')
+                  ListTile(
+                    title: Text('Usuarios'),
+                    onTap: () {
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UsuariosView(),
+                            ),
+                          );
+                    },
+                  ),
+                  
                 ListTile(
                   title: Text('Cerrar Sesión'),
                   onTap: () {

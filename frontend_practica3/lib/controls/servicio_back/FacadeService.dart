@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:frontend_practica3/controls/Conexion.dart';
 import 'package:frontend_practica3/controls/servicio_back/RespuestaGenerica.dart';
@@ -83,8 +82,16 @@ class FacadeService{
     return await c.solicitud_get('/noticias/comentarios', false);
   }
 
+  Future<RespuestaGenerica> obtenerUsuarios() async{
+    return await c.solicitud_get('/admin/usuarios', false);
+  }
+
   Future<RespuestaGenerica> modificarComentario(external, Map<String,String> data) async{
     return await c.solicitud_patch('/noticias/comentario/modificar/$external', false, data);
+  }
+
+  Future<RespuestaGenerica> suspenderCuenta(external, Map<String,bool> data) async{
+    return await c.solicitud_patch('/admin/personas/modificar/$external', false, data);
   }
 
 }

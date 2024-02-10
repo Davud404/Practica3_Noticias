@@ -9,14 +9,14 @@ class Conexion {
   //final String URL = "http://localhost:3001/api";
   //final String URL_Media = "http://localhost:3001/multimedia/";
   //Celular desde la casa
-  //final String URL = "http://192.168.1.14:3001/api";
-  //final String URL_Media = "http://192.168.1.14:3001/multimedia/";
+  final String URL = "http://192.168.1.14:3001/api";
+  final String URL_Media = "http://192.168.1.14:3001/multimedia/";
   //Celular desde la U
   //final String URL = "http://10.20.137.108:3001/api";
   //final String URL_Media = "http://10.20.137.108:3001/multimedia/";
   //Celular desde la radio
-  final String URL = "http://192.168.0.36:3001/api";
-  final String URL_Media = "http://192.168.0.36:3001/multimedia/";
+  //final String URL = "http://192.168.0.36:3001/api";
+  //final String URL_Media = "http://192.168.0.36:3001/multimedia/";
   static bool NO_TOKEN = false;
   //token
 
